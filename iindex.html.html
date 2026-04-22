@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aprende con Olivo – Luisa Fernanda</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow-x:hidden;}
+#app{font-family:'Nunito',sans-serif;max-width:420px;margin:0 auto;background:transparent;}
+.screen{display:none;flex-direction:column;min-height:100svh;animation:fadeIn .3s ease;}
+.screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes starSpin{0%{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes unlockAnim{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.2) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes shimmer{0%{opacity:.7}50%{opacity:1}100%{opacity:.7}}
+@keyframes heartbeat{0%,100%{transform:scale(1)}30%{transform:scale(1.12)}}
+@keyframes fadeSlide{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+
+:root{
+  --pk0:#FFF0F5;--pk1:#FFD6E7;--pk2:#FFB3D1;--pk3:#FF8FB3;--pk4:#FF6B9D;--pk5:#E8527F;--pk6:#C73B6A;
+  --acc:#FF6B9D;--acc2:#E8527F;--acc3:#C73B6A;
+  --purp:#E8D5F5;--purp2:#C084FC;--purp3:#9333EA;
+  --mint:#D4F5E9;--mint2:#34D399;--mint3:#059669;
+  --sun:#FFF3D4;--sun2:#FBBF24;--sun3:#D97706;
+  --txt:#3D1A2A;--txt2:#6B3A4F;--txt3:#9B6B7A;
+}
+
+.home-bg{background:linear-gradient(160deg,#FFF0F5 0%,#FFE4EF 40%,#FFF0F5 100%);}
+.back-btn{width:40px;height:40px;border-radius:50%;background:white;border:2px solid var(--pk2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--acc2);touch-action:manipulation;}
+
+.home-top{padding:24px 20px 12px;text-align:center;}
+.home-mascot{font-size:52px;animation:bounce 2s ease-in-out infinite;display:inline-block;}
+.home-greeting{font-family:'Fredoka One',cursive;font-size:12px;color:var(--pk4);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+.home-title{font-family:'Fredoka One',cursive;font-size:27px;color:var(--txt);margin-top:2px;}
+.xp-wrap{margin:10px auto 0;max-width:240px;}
+.xp-row{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-bottom:4px;font-weight:700;}
+.xp-bar{height:10px;background:var(--pk1);border-radius:6px;overflow:hidden;border:1px solid var(--pk2);}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--pk3),var(--acc));border-radius:6px;transition:width .6s;}
+
+.subjects-grid{padding:0 14px 12px;display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.subject-card{border-radius:20px;padding:16px 12px;cursor:pointer;border:2px solid transparent;text-align:center;transition:transform .15s;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.subject-card:active{transform:scale(.96);}
+.subject-card .icon{font-size:34px;display:block;margin-bottom:5px;}
+.subject-card .label{font-family:'Fredoka One',cursive;font-size:14px;}
+.subject-card .lvl-info{font-size:10px;margin-top:2px;opacity:.9;}
+.prog-bar-s{height:5px;border-radius:3px;margin-top:6px;background:rgba(255,255,255,.35);}
+.prog-fill-s{height:100%;border-radius:3px;background:rgba(255,255,255,.85);transition:width .5s;}
+.card-lect{background:linear-gradient(135deg,#FFB3D1,#FF8FB3);color:white;border-color:#FF6B9D;}
+.card-escr{background:linear-gradient(135deg,#D4B5F5,#B07FF5);color:white;border-color:#9333EA;}
+.card-mat{background:linear-gradient(135deg,#A8EDD5,#5DCAA5);color:white;border-color:#059669;}
+.card-comp{background:linear-gradient(135deg,#FFD996,#FFBB55);color:white;border-color:#D97706;}
+
+.streak-section{padding:0 14px 12px;}
+.streak-card{background:white;border-radius:16px;padding:12px 14px;border:2px solid var(--pk1);display:flex;align-items:center;gap:10px;}
+.streak-flames{display:flex;gap:2px;font-size:11px;margin-top:3px;flex-wrap:wrap;}
+.streak-title{font-weight:800;font-size:13px;color:var(--txt);}
+.streak-sub{font-size:11px;color:var(--txt3);margin-top:1px;}
+.next-reward-mini{background:var(--pk0);border-radius:10px;padding:8px 10px;border:1px solid var(--pk2);display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--acc2);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+
+.hist-btn{display:block;width:calc(100% - 28px);margin:0 14px 14px;padding:12px;border-radius:14px;border:2px solid var(--pk2);background:white;font-family:'Fredoka One',cursive;font-size:14px;cursor:pointer;color:var(--acc2);text-align:center;touch-action:manipulation;}
+.hist-btn:active{background:var(--pk0);}
+
+.rachas-bg{background:linear-gradient(160deg,#FFF0F5,#FFE4EF);}
+.rachas-header{padding:16px 16px 10px;display:flex;align-items:center;gap:10px;}
+.rachas-title{font-family:'Fredoka One',cursive;font-size:20px;color:var(--txt);}
+.rachas-year{font-size:11px;color:var(--txt3);font-weight:700;margin-left:auto;}
+.quincenas-list{padding:0 14px 20px;display:flex;flex-direction:column;gap:9px;}
+.q-card{border-radius:16px;padding:13px 14px;background:white;border:2px solid var(--pk1);display:flex;align-items:center;gap:11px;position:relative;overflow:hidden;}
+.q-card.unlocked{border-color:var(--pk3);background:var(--pk0);}
+.q-card.current{border-color:var(--acc);border-width:2.5px;background:var(--pk0);animation:heartbeat 2s ease-in-out infinite;}
+.q-card.locked{opacity:.5;background:#FAF0F3;}
+.q-month-badge{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--acc3);background:var(--pk1);border-radius:6px;padding:2px 6px;position:absolute;top:7px;right:10px;}
+.q-icon{width:44px;height:44px;border-radius:13px;background:var(--pk1);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.q-icon.done{background:var(--mint);}.q-icon.curr{background:var(--pk2);animation:shimmer 2s infinite;}
+.q-name{font-family:'Fredoka One',cursive;font-size:14px;color:var(--txt);}
+.q-dates{font-size:11px;color:var(--txt3);margin-top:1px;}
+.q-reward{font-size:11px;font-weight:700;color:var(--acc2);margin-top:3px;}
+.q-stars{display:flex;gap:2px;font-size:13px;margin-top:3px;}
+
+.history-bg{background:linear-gradient(160deg,#FFF0F5,#FFE4EF);}
+.history-header{padding:16px 16px 10px;display:flex;align-items:center;gap:10px;}
+.history-title{font-family:'Fredoka One',cursive;font-size:20px;color:var(--txt);}
+.hist-list{padding:0 14px 20px;display:flex;flex-direction:column;gap:9px;}
+.hist-card{background:white;border-radius:16px;padding:14px;border:2px solid var(--pk1);display:flex;align-items:center;gap:11px;}
+.hist-icon{width:42px;height:42px;border-radius:12px;background:var(--pk0);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.hist-info{flex:1;}
+.hist-name{font-family:'Fredoka One',cursive;font-size:14px;color:var(--txt);}
+.hist-detail{font-size:11px;color:var(--txt3);margin-top:2px;}
+.hist-stars{font-size:13px;margin-top:4px;}
+.hist-xp{font-size:12px;font-weight:800;color:var(--acc2);background:var(--pk0);border-radius:8px;padding:3px 8px;border:1px solid var(--pk2);}
+
+.levels-bg{background:linear-gradient(160deg,#FFF0F5,#FFE4EF);}
+.levels-header{padding:16px 16px 10px;display:flex;align-items:center;gap:10px;}
+.levels-title{font-family:'Fredoka One',cursive;font-size:20px;color:var(--txt);}
+.levels-list{padding:0 14px 20px;display:flex;flex-direction:column;gap:9px;}
+.level-card{border-radius:16px;padding:14px;background:white;border:2px solid var(--pk1);cursor:pointer;display:flex;align-items:center;gap:11px;transition:transform .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.level-card.locked{opacity:.5;cursor:not-allowed;background:#FAF0F3;}
+.level-card.current{border-color:var(--acc);}
+.level-card.completed{background:linear-gradient(135deg,#FFF0F5,#FFE4EF);}
+.lv-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.lv-name{font-family:'Fredoka One',cursive;font-size:15px;color:var(--txt);}
+.lv-desc{font-size:11px;color:var(--txt3);margin-top:2px;}
+.lv-stars-row{display:flex;gap:2px;margin-top:5px;font-size:14px;}
+.diff-pill{font-size:10px;font-weight:800;padding:2px 7px;border-radius:7px;margin-left:5px;}
+.dp-easy{background:#D4F5E9;color:#065F46;}
+.dp-med{background:#FFF3D4;color:#92400E;}
+.dp-hard{background:#FFE4EF;color:#C73B6A;}
+.dp-expert{background:var(--purp);color:var(--purp3);}
+
+.act-bg-lect{background:linear-gradient(160deg,#FFF0F5,#FFE4EF);}
+.act-bg-escr{background:linear-gradient(160deg,#F5F0FF,#EDE0FF);}
+.act-bg-mat{background:linear-gradient(160deg,#F0FDF9,#D4F5E9);}
+.act-bg-comp{background:linear-gradient(160deg,#FFFBEB,#FEF3C7);}
+.sec-header{padding:14px 14px 8px;display:flex;align-items:center;gap:9px;}
+.stitle{font-family:'Fredoka One',cursive;font-size:19px;}
+.stitle-lect{color:var(--acc3);}
+.stitle-escr{color:var(--purp3);}
+.stitle-mat{color:var(--mint3);}
+.stitle-comp{color:var(--sun3);}
+.score-pill{margin-left:auto;background:white;border-radius:20px;padding:4px 10px;display:flex;align-items:center;gap:3px;font-weight:800;font-size:12px;border:1.5px solid var(--pk2);color:var(--acc2);}
+
+.act-card{background:white;border-radius:18px;margin:0 13px 13px;padding:16px;border:2px solid var(--pk1);}
+.act-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;color:var(--acc);}
+.diff-tag{font-size:9px;font-weight:800;padding:2px 7px;border-radius:7px;margin-left:5px;vertical-align:middle;}
+.letra-big{font-family:'Fredoka One',cursive;font-size:80px;text-align:center;color:var(--acc);line-height:1;margin:5px 0;}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px;}
+.opt-btn{padding:14px;border-radius:12px;border:2px solid var(--pk2);background:var(--pk0);font-family:'Fredoka One',cursive;font-size:14px;cursor:pointer;text-align:center;transition:all .15s;color:var(--txt);touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:54px;}
+.opt-btn:active{background:var(--pk1);}
+.opt-btn.correct{background:#D4F5E9;border-color:var(--mint2);color:#065F46;animation:pop .3s;}
+.opt-btn.wrong{background:#FFE4EF;border-color:var(--pk3);animation:shake .3s;}
+
+.trace-area{background:var(--pk0);border-radius:12px;padding:12px;text-align:center;border:2px dashed var(--pk3);margin-bottom:11px;}
+.typed-w{font-family:'Fredoka One',cursive;font-size:28px;color:var(--acc2);min-height:42px;letter-spacing:5px;}
+.keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.key-btn{padding:10px 2px;border-radius:8px;border:1.5px solid var(--pk2);background:white;font-family:'Fredoka One',cursive;font-size:12px;cursor:pointer;color:var(--acc2);transition:all .1s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:40px;}
+.key-btn:active{background:var(--pk1);transform:scale(.93);}
+.key-del{background:var(--pk1);grid-column:span 2;font-size:10px;color:var(--acc3);}
+.key-ok{background:var(--acc);color:white;grid-column:span 2;}
+
+.operacion{font-family:'Fredoka One',cursive;font-size:44px;text-align:center;color:var(--mint3);margin:5px 0 12px;}
+.num-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.num-btn{padding:14px 5px;border-radius:12px;border:2px solid var(--mint);background:#F0FDF9;font-family:'Fredoka One',cursive;font-size:19px;cursor:pointer;color:var(--mint3);transition:all .15s;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:54px;}
+.num-btn:active{background:var(--mint);}
+.num-btn.correct{background:#D4F5E9;border-color:var(--mint2);animation:pop .3s;}
+.num-btn.wrong{background:#FFE4EF;border-color:var(--pk3);animation:shake .3s;}
+.vis-items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:5px 0 11px;}
+
+.cuento-txt{font-size:13px;line-height:1.75;color:var(--txt2);background:var(--sun);border-radius:12px;padding:12px;border-left:4px solid var(--sun2);}
+.preg-txt{font-size:14px;font-weight:800;color:var(--sun3);margin:11px 0 8px;}
+.resp-btn{display:block;width:100%;padding:12px 13px;border-radius:12px;border:2px solid #FDE68A;background:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;color:#78350F;text-align:left;margin-bottom:7px;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.resp-btn:active{background:var(--sun);}
+.resp-btn.correct{background:#D4F5E9;border-color:var(--mint2);color:#065F46;}
+.resp-btn.wrong{background:#FFE4EF;border-color:var(--pk3);color:var(--acc3);}
+
+.fb-box{text-align:center;padding:9px;}
+.fb-emoji{font-size:34px;display:block;animation:pop .4s;}
+.fb-text{font-family:'Fredoka One',cursive;font-size:16px;margin-top:4px;}
+.fb-ok{color:var(--mint3)}.fb-fail{color:var(--acc3);}
+
+.next-btn{display:block;width:calc(100% - 26px);margin:0 13px 16px;padding:16px;border-radius:14px;border:none;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;color:white;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.next-btn:active{transform:scale(.97);}
+.nb-lect{background:linear-gradient(135deg,var(--pk3),var(--acc));}
+.nb-escr{background:linear-gradient(135deg,var(--purp2),var(--purp3));}
+.nb-mat{background:linear-gradient(135deg,var(--mint2),var(--mint3));}
+.nb-comp{background:linear-gradient(135deg,var(--sun2),var(--sun3));}
+
+.modal-wrap{min-height:550px;background:rgba(255,182,211,.35);display:flex;align-items:center;justify-content:center;padding:18px;border-radius:16px;margin:14px;}
+.modal-card{background:white;border-radius:26px;padding:26px 20px;text-align:center;width:100%;border:2px solid var(--pk2);}
+.m-emoji{font-size:58px;display:block;animation:starSpin .5s ease;}
+.m-title{font-family:'Fredoka One',cursive;font-size:23px;color:var(--txt);margin:9px 0 4px;}
+.m-sub{font-size:12px;color:var(--txt3);}
+.m-stars{display:flex;justify-content:center;gap:5px;margin:12px 0;}
+.m-star{font-size:30px;animation:starSpin .4s ease both;}
+.unlock-box{background:var(--pk0);border-radius:12px;padding:10px 13px;margin-top:10px;display:flex;align-items:center;gap:9px;animation:unlockAnim .5s;border:1.5px solid var(--pk2);}
+.unlock-txt{font-family:'Fredoka One',cursive;font-size:13px;color:var(--acc2);}
+.m-btn{margin-top:12px;padding:16px 26px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--pk3),var(--acc));color:white;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;width:100%;touch-action:manipulation;}
+
+.reward-modal-wrap{min-height:600px;background:rgba(255,182,211,.45);display:flex;align-items:center;justify-content:center;padding:18px;border-radius:16px;margin:14px;}
+.reward-card{background:white;border-radius:28px;padding:28px 22px;text-align:center;width:100%;border:3px solid var(--pk3);}
+.r-confetti{font-size:32px;display:block;animation:bounce 1s ease-in-out infinite;}
+.r-title{font-family:'Fredoka One',cursive;font-size:26px;color:var(--acc2);margin:10px 0 4px;}
+.r-sub{font-size:13px;color:var(--txt3);}
+.r-reward-icon{font-size:80px;display:block;margin:16px auto;animation:heartbeat 1.5s ease-in-out infinite;}
+.r-reward-name{font-family:'Fredoka One',cursive;font-size:22px;color:var(--txt);margin-bottom:4px;}
+.r-reward-desc{font-size:13px;color:var(--txt3);line-height:1.6;}
+.r-quincena-badge{display:inline-block;background:var(--pk1);color:var(--acc2);font-size:11px;font-weight:800;padding:4px 12px;border-radius:10px;margin:10px 0;}
+.r-btn{margin-top:16px;padding:16px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--pk3),var(--acc));color:white;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;width:100%;touch-action:manipulation;}
+
+.confirm-wrap{min-height:520px;background:rgba(255,182,211,.3);display:flex;align-items:center;justify-content:center;padding:18px;border-radius:16px;margin:14px;}
+.confirm-card{background:white;border-radius:26px;padding:28px 22px;text-align:center;width:100%;border:2px solid var(--pk2);}
+.confirm-emoji{font-size:56px;display:block;margin-bottom:12px;}
+.confirm-title{font-family:'Fredoka One',cursive;font-size:22px;color:var(--txt);margin-bottom:6px;}
+.confirm-sub{font-size:13px;color:var(--txt3);line-height:1.6;margin-bottom:20px;}
+.confirm-saved{background:var(--pk0);border-radius:12px;padding:12px;border:1.5px solid var(--pk2);margin-bottom:18px;text-align:left;}
+.confirm-saved-title{font-size:11px;font-weight:800;color:var(--acc2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.saved-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt2);margin-bottom:5px;font-weight:700;}
+.confirm-btn-yes{width:100%;padding:16px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--pk3),var(--acc));color:white;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;margin-bottom:10px;touch-action:manipulation;}
+.confirm-btn-no{width:100%;padding:14px;border-radius:13px;border:2px solid var(--pk2);background:white;font-family:'Fredoka One',cursive;font-size:15px;cursor:pointer;color:var(--acc2);touch-action:manipulation;}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+<div id="home" class="screen active home-bg">
+  <div class="home-top">
+    <span class="home-mascot">🦉</span>
+    <div class="home-greeting">¡Hola, Luisa Fernanda! 💕</div>
+    <div class="home-title">Aprende con Olivo</div>
+    <div class="xp-wrap">
+      <div class="xp-row"><span>🌸 <span id="total-xp">0</span> XP</span><span>Nivel <span id="player-level">1</span></span></div>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="subjects-grid">
+    <button class="subject-card card-lect" onclick="goToLevels('lectura')">
+      <span class="icon">📚</span><span class="label">Lectura</span>
+      <span class="lvl-info" id="hl-lectura">Nivel 1 · 0%</span>
+      <div class="prog-bar-s"><div class="prog-fill-s" id="hp-lectura" style="width:0%"></div></div>
+    </button>
+    <button class="subject-card card-escr" onclick="goToLevels('escritura')">
+      <span class="icon">✏️</span><span class="label">Escritura</span>
+      <span class="lvl-info" id="hl-escritura">Nivel 1 · 0%</span>
+      <div class="prog-bar-s"><div class="prog-fill-s" id="hp-escritura" style="width:0%"></div></div>
+    </button>
+    <button class="subject-card card-mat" onclick="goToLevels('mates')">
+      <span class="icon">🔢</span><span class="label">Matemáticas</span>
+      <span class="lvl-info" id="hl-mates">Nivel 1 · 0%</span>
+      <div class="prog-bar-s"><div class="prog-fill-s" id="hp-mates" style="width:0%"></div></div>
+    </button>
+    <button class="subject-card card-comp" onclick="goToLevels('comprension')">
+      <span class="icon">🌟</span><span class="label">Comprensión</span>
+      <span class="lvl-info" id="hl-comprension">Nivel 1 · 0%</span>
+      <div class="prog-bar-s"><div class="prog-fill-s" id="hp-comprension" style="width:0%"></div></div>
+    </button>
+  </div>
+  <div class="streak-section">
+    <div class="streak-card">
+      <div style="flex:1;">
+        <div class="streak-title">🌸 Racha de <span id="streak-count">0</span> días</div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:1px;" id="streak-quincena-info">Quincena 1 · Abril 2026</div>
+        <div class="streak-flames" id="streak-flames"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+        <div class="next-reward-mini" onclick="goTo('rachas')">
+          <span id="next-reward-icon">🍦</span><span>Rachas</span><span style="font-size:10px;">→</span>
+        </div>
+        <div class="next-reward-mini" onclick="goTo('history')" style="font-size:10px;">
+          <span>📊</span><span>Mi historial</span><span style="font-size:10px;">→</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="hist-btn" onclick="goTo('confirm-reset')">🔄 Reiniciar progreso</button>
+</div>
+
+<div id="confirm-reset" class="screen" style="background:linear-gradient(160deg,#FFF0F5,#FFE4EF);">
+  <div class="confirm-wrap">
+    <div class="confirm-card">
+      <span class="confirm-emoji">🔄</span>
+      <div class="confirm-title">¿Reiniciar el progreso?</div>
+      <div class="confirm-sub">Tu progreso actual quedará guardado en el historial. Luisa Fernanda podrá empezar desde cero. 💕</div>
+      <div class="confirm-saved">
+        <div class="confirm-saved-title">💾 Se guardará en historial</div>
+        <div class="saved-row"><span>📚</span><span id="save-lect">Lectura: Nivel 1 · ☆</span></div>
+        <div class="saved-row"><span>✏️</span><span id="save-escr">Escritura: Nivel 1 · ☆</span></div>
+        <div class="saved-row"><span>🔢</span><span id="save-mat">Mates: Nivel 1 · ☆</span></div>
+        <div class="saved-row"><span>🌟</span><span id="save-comp">Comprensión: Nivel 1 · ☆</span></div>
+        <div class="saved-row"><span>🌸</span><span id="save-xp">XP total: 0 · Racha: 0 días</span></div>
+      </div>
+      <button class="confirm-btn-yes" onclick="doReset()">¡Sí, empezar desde cero! 🌱</button>
+      <button class="confirm-btn-no" onclick="goTo('home')">No, regresar</button>
+    </div>
+  </div>
+</div>
+
+<div id="rachas" class="screen rachas-bg">
+  <div class="rachas-header">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <span class="rachas-title">🏆 Mis Rachas 2026</span>
+    <span class="rachas-year">Abr–Dic</span>
+  </div>
+  <div class="quincenas-list" id="quincenas-list"></div>
+</div>
+
+<div id="history" class="screen history-bg">
+  <div class="history-header">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <span class="history-title">📊 Mi Historial</span>
+  </div>
+  <div class="hist-list" id="hist-list"></div>
+</div>
+
+<div id="levels-screen" class="screen levels-bg">
+  <div class="levels-header">
+    <button class="back-btn" onclick="goTo('home')">←</button>
+    <span class="levels-title" id="levels-title">Niveles</span>
+  </div>
+  <div class="levels-list" id="levels-list"></div>
+</div>
+
+<div id="lectura" class="screen act-bg-lect">
+  <div class="sec-header">
+    <button class="back-btn" onclick="goToLevels('lectura')">←</button>
+    <span class="stitle stitle-lect">📚 Lectura</span>
+    <div class="score-pill">🌸 <span id="score-lectura">0</span></div>
+  </div>
+  <div class="act-card">
+    <div class="act-label">¿Cuál imagen empieza con esta letra? <span class="diff-tag" id="diff-lectura"></span></div>
+    <div class="letra-big" id="letra-actual">A</div>
+    <div id="lect-feedback" class="fb-box" style="display:none;"></div>
+    <div class="opts-grid" id="opciones-lectura"></div>
+  </div>
+  <button class="next-btn nb-lect" id="next-lectura" onclick="nextLectura()" style="display:none;">¡Siguiente! →</button>
+</div>
+
+<div id="escritura" class="screen act-bg-escr">
+  <div class="sec-header">
+    <button class="back-btn" onclick="goToLevels('escritura')">←</button>
+    <span class="stitle stitle-escr">✏️ Escritura</span>
+    <div class="score-pill">🌸 <span id="score-escritura">0</span></div>
+  </div>
+  <div class="act-card">
+    <div class="act-label">Escribe el nombre <span class="diff-tag" id="diff-escritura"></span></div>
+    <div style="text-align:center;font-size:50px;margin-bottom:6px;" id="escrit-img">🐱</div>
+    <div class="trace-area"><div class="typed-w" id="typed-word">_ _ _ _</div></div>
+    <div id="escrit-feedback" class="fb-box" style="display:none;"></div>
+    <div class="keyboard" id="keyboard"></div>
+  </div>
+  <button class="next-btn nb-escr" id="next-escritura" onclick="nextEscritura()" style="display:none;">¡Siguiente! →</button>
+</div>
+
+<div id="mates" class="screen act-bg-mat">
+  <div class="sec-header">
+    <button class="back-btn" onclick="goToLevels('mates')">←</button>
+    <span class="stitle stitle-mat">🔢 Matemáticas</span>
+    <div class="score-pill">🌸 <span id="score-mates">0</span></div>
+  </div>
+  <div class="act-card">
+    <div class="act-label">Ejercicio <span class="diff-tag" id="diff-mates"></span></div>
+    <div class="vis-items" id="vis-items"></div>
+    <div class="operacion" id="operacion-display"></div>
+    <div id="mates-feedback" class="fb-box" style="display:none;"></div>
+    <div class="num-grid" id="num-opciones"></div>
+  </div>
+  <button class="next-btn nb-mat" id="next-mates" onclick="nextMates()" style="display:none;">¡Siguiente! →</button>
+</div>
+
+<div id="comprension" class="screen act-bg-comp">
+  <div class="sec-header">
+    <button class="back-btn" onclick="goToLevels('comprension')">←</button>
+    <span class="stitle stitle-comp">🌟 Comprensión</span>
+    <div class="score-pill">🌸 <span id="score-comp">0</span></div>
+  </div>
+  <div class="act-card">
+    <div class="act-label">Lee y responde <span class="diff-tag" id="diff-comp"></span></div>
+    <div style="text-align:center;font-size:42px;margin-bottom:6px;" id="cuento-img">🐰</div>
+    <div class="cuento-txt" id="cuento-texto"></div>
+    <div class="preg-txt" id="preg-texto"></div>
+    <div id="respuestas-container"></div>
+    <div id="comp-feedback" class="fb-box" style="display:none;"></div>
+  </div>
+  <button class="next-btn nb-comp" id="next-comp" onclick="nextComprension()" style="display:none;">¡Siguiente! →</button>
+</div>
+
+<div id="modal-screen" class="screen" style="background:linear-gradient(160deg,#FFF0F5,#FFE4EF);">
+  <div class="modal-wrap">
+    <div class="modal-card">
+      <span class="m-emoji" id="m-emoji">🎉</span>
+      <div class="m-title" id="m-title">¡Nivel completado!</div>
+      <div class="m-sub" id="m-sub">¡Ganaste estrellas!</div>
+      <div class="m-stars" id="m-stars"></div>
+      <div id="m-unlock" style="display:none;" class="unlock-box">
+        <span style="font-size:26px;">🔓</span>
+        <div class="unlock-txt" id="m-unlock-text">¡Desbloqueaste el siguiente nivel!</div>
+      </div>
+      <button class="m-btn" onclick="modalContinue()">¡Continuar! 💕</button>
+    </div>
+  </div>
+</div>
+
+<div id="reward-screen" class="screen" style="background:linear-gradient(160deg,#FFF0F5,#FFE4EF);">
+  <div class="reward-modal-wrap">
+    <div class="reward-card">
+      <span class="r-confetti" id="r-confetti">🎀</span>
+      <div class="r-title" id="r-title">¡Racha lograda!</div>
+      <div class="r-sub" id="r-sub">¡Completaste tu quincena!</div>
+      <span class="r-reward-icon" id="r-reward-icon">🍦</span>
+      <div class="r-reward-name" id="r-reward-name">Helado de fresa</div>
+      <div class="r-reward-desc" id="r-reward-desc">¡Te ganaste un helado!</div>
+      <div class="r-quincena-badge" id="r-badge">Quincena 1 · Abril 2026</div>
+      <button class="r-btn" onclick="closeReward()">¡Qué emoción! 🎉</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const QUINCENAS=[
+  {id:1,mes:'Abril',periodo:'1–15 Abr',icon:'🌸',reward:'🍦',rName:'Helado de fresa',rDesc:'¡Un delicioso helado de fresa por estudiar tanto!',dias:15},
+  {id:2,mes:'Abril',periodo:'16–30 Abr',icon:'🌺',reward:'🧸',rName:'Osito de peluche',rDesc:'¡Un tierno osito de peluche para abrazar fuerte!',dias:15},
+  {id:3,mes:'Mayo',periodo:'1–15 May',icon:'🌼',reward:'🍭',rName:'Bolsa de caramelos',rDesc:'¡Una bolsa llena de caramelos de colores!',dias:15},
+  {id:4,mes:'Mayo',periodo:'16–31 May',icon:'🌻',reward:'🎀',rName:'Moño rosado',rDesc:'¡Un moño rosado brillante para tu cabello!',dias:16},
+  {id:5,mes:'Junio',periodo:'1–15 Jun',icon:'🦋',reward:'🍕',rName:'Pizza especial',rDesc:'¡Una pizza con tus ingredientes favoritos!',dias:15},
+  {id:6,mes:'Junio',periodo:'16–30 Jun',icon:'🌈',reward:'🎨',rName:'Kit de pintura',rDesc:'¡Pinturas y pinceles para crear arte increíble!',dias:15},
+  {id:7,mes:'Julio',periodo:'1–15 Jul',icon:'🌙',reward:'🧁',rName:'Cupcake de vainilla',rDesc:'¡Un cupcake con chispas de colores!',dias:15},
+  {id:8,mes:'Julio',periodo:'16–31 Jul',icon:'⭐',reward:'💅',rName:'Esmalte de uñas',rDesc:'¡Esmalte brillantoso color rosa!',dias:16},
+  {id:9,mes:'Agosto',periodo:'1–15 Ago',icon:'🌟',reward:'🍰',rName:'Torta especial',rDesc:'¡Una torta personalizada para celebrar tu esfuerzo!',dias:15},
+  {id:10,mes:'Agosto',periodo:'16–31 Ago',icon:'🎠',reward:'🪆',rName:'Muñequita rusa',rDesc:'¡Una bonita muñequita matrioshka de colores!',dias:16},
+  {id:11,mes:'Septiembre',periodo:'1–15 Sep',icon:'🍎',reward:'🎪',rName:'Visita al parque',rDesc:'¡Un día de diversión en el parque de atracciones!',dias:15},
+  {id:12,mes:'Septiembre',periodo:'16–30 Sep',icon:'🍁',reward:'🍩',rName:'Donuts de colores',rDesc:'¡Una caja de donuts con chispas y glaseado rosa!',dias:15},
+  {id:13,mes:'Octubre',periodo:'1–15 Oct',icon:'🎃',reward:'🧶',rName:'Set de manualidades',rDesc:'¡Todo para hacer pulseras y collares brillantes!',dias:15},
+  {id:14,mes:'Octubre',periodo:'16–31 Oct',icon:'🦄',reward:'🦄',rName:'Muñeca unicornio',rDesc:'¡Una hermosa muñeca unicornio con melena de arcoíris!',dias:16},
+  {id:15,mes:'Noviembre',periodo:'1–15 Nov',icon:'🍂',reward:'🍫',rName:'Caja de chocolates',rDesc:'¡Una caja de chocolates con formas de corazón!',dias:15},
+  {id:16,mes:'Noviembre',periodo:'16–30 Nov',icon:'🌙',reward:'💃',rName:'Clase de baile',rDesc:'¡Una clase de baile de tu estilo favorito!',dias:15},
+  {id:17,mes:'Diciembre',periodo:'1–15 Dic',icon:'❄️',reward:'🎄',rName:'Adorno navideño',rDesc:'¡Un adorno navideño brillante para el árbol de casa!',dias:15},
+  {id:18,mes:'Diciembre',periodo:'16–31 Dic',icon:'🎁',reward:'🎁',rName:'Regalo sorpresa',rDesc:'¡Un regalo sorpresa especial de Navidad!',dias:16},
+];
+
+function freshState(){
+  return {
+    currentSubject:'lectura', currentLevelIdx:0,
+    totalXP:0, playerLevel:1,
+    scores:{lectura:0,escritura:0,mates:0,comprension:0},
+    progress:{
+      lectura:{unlocked:0,stars:[0,0,0,0]},
+      escritura:{unlocked:0,stars:[0,0,0,0]},
+      mates:{unlocked:0,stars:[0,0,0,0]},
+      comprension:{unlocked:0,stars:[0,0,0,0]}
+    },
+    questIdx:{lectura:0,escritura:0,mates:0,comprension:0},
+    levelQuestCount:{lectura:0,escritura:0,mates:0,comprension:0},
+    typedSoFar:'',
+    streakDays:0,
+    currentQuincena:1,
+    quincenasCompleted:[]
+  };
+}
+
+let STATE = freshState();
+let HISTORY = [];
+let modalCallback = null;
+
+const LEVELS={
+  lectura:[
+    {name:'Nivel 1',diff:'Fácil',dc:'easy',icon:'🌱',desc:'Vocales y letras básicas',xp:10},
+    {name:'Nivel 2',diff:'Medio',dc:'med',icon:'🌿',desc:'Consonantes simples',xp:20},
+    {name:'Nivel 3',diff:'Difícil',dc:'hard',icon:'🌳',desc:'Sílabas y palabras',xp:30},
+    {name:'Nivel 4',diff:'Experto',dc:'expert',icon:'⭐',desc:'Lectura de oraciones',xp:40},
+  ],
+  escritura:[
+    {name:'Nivel 1',diff:'Fácil',dc:'easy',icon:'🌱',desc:'Letras de 3–4 caracteres',xp:10},
+    {name:'Nivel 2',diff:'Medio',dc:'med',icon:'🌿',desc:'Palabras de 5–6 letras',xp:20},
+    {name:'Nivel 3',diff:'Difícil',dc:'hard',icon:'🌳',desc:'Palabras compuestas',xp:30},
+    {name:'Nivel 4',diff:'Experto',dc:'expert',icon:'⭐',desc:'Oraciones cortas',xp:40},
+  ],
+  mates:[
+    {name:'Nivel 1',diff:'Fácil',dc:'easy',icon:'🌱',desc:'Contar hasta 5',xp:10},
+    {name:'Nivel 2',diff:'Medio',dc:'med',icon:'🌿',desc:'Sumas hasta 10',xp:20},
+    {name:'Nivel 3',diff:'Difícil',dc:'hard',icon:'🌳',desc:'Sumas y restas hasta 20',xp:30},
+    {name:'Nivel 4',diff:'Experto',dc:'expert',icon:'⭐',desc:'Multiplicación básica',xp:40},
+  ],
+  comprension:[
+    {name:'Nivel 1',diff:'Fácil',dc:'easy',icon:'🌱',desc:'Cuentos de 2 oraciones',xp:10},
+    {name:'Nivel 2',diff:'Medio',dc:'med',icon:'🌿',desc:'Cuentos de 3–4 oraciones',xp:20},
+    {name:'Nivel 3',diff:'Difícil',dc:'hard',icon:'🌳',desc:'Textos con detalles',xp:30},
+    {name:'Nivel 4',diff:'Experto',dc:'expert',icon:'⭐',desc:'Inferencia y análisis',xp:40},
+  ]
+};
+
+const DP={easy:{bg:'#D4F5E9',c:'#065F46'},med:{bg:'#FFF3D4',c:'#92400E'},hard:{bg:'#FFE4EF',c:'#C73B6A'},expert:{bg:'#F0E8FF',c:'#7C3AED'}};
+
+const CONTENT={
+  lectura:{
+    0:[{letra:'A',opciones:['🍎','🦁','🌙','🐘'],correcta:0},{letra:'E',opciones:['🐘','🌸','☀️','🐱'],correcta:0},{letra:'I',opciones:['🐋','🌿','🦄','🍌'],correcta:2}],
+    1:[{letra:'M',opciones:['🍎','🦁','🌙','🦷'],correcta:2},{letra:'S',opciones:['🐱','☀️','🎈','🌊'],correcta:1},{letra:'P',opciones:['🐟','🌺','🎠','🦜'],correcta:1}],
+    2:[{letra:'TR',opciones:['🚂','🦁','🌸','🌊'],correcta:0},{letra:'FL',opciones:['🍎','🌺','🌙','🐋'],correcta:1},{letra:'GR',opciones:['🐦','🏆','🍇','🌵'],correcta:2}],
+    3:[{letra:'SOL',opciones:['🌙','☀️','⭐','🌈'],correcta:1},{letra:'MAR',opciones:['🏔️','🌊','🌿','🌸'],correcta:1},{letra:'LUNA',opciones:['🌙','☀️','⭐','🌈'],correcta:0}]
+  },
+  escritura:{
+    0:[{img:'🐱',word:'GATO'},{img:'☀️',word:'SOL'},{img:'🌙',word:'LUNA'}],
+    1:[{img:'🌸',word:'ROSA'},{img:'🏠',word:'CASA'},{img:'🐘',word:'ELEFANTE'}],
+    2:[{img:'🦋',word:'MARIPOSA'},{img:'🌈',word:'ARCOIRIS'},{img:'🐬',word:'DELFIN'}],
+    3:[{img:'🌺',word:'LAFLORESROJA'},{img:'🐱',word:'MIGATOES'},{img:'⭐',word:'LANOCHESBELLA'}]
+  },
+  mates:{
+    0:[{emoji:'🍎',cantidad:3,opciones:[2,3,4,5],correcta:1,tipo:'conteo'},{emoji:'⭐',cantidad:4,opciones:[3,4,5,2],correcta:1,tipo:'conteo'},{emoji:'🐣',cantidad:2,opciones:[1,2,3,4],correcta:1,tipo:'conteo'}],
+    1:[{emoji:'🍎',cantidad:7,opciones:[5,6,7,8],correcta:2,tipo:'conteo'},{a:3,b:4,emoji:'🌟',opciones:[5,6,7,8],correcta:2,tipo:'suma'},{a:2,b:5,emoji:'🐣',opciones:[6,7,8,9],correcta:1,tipo:'suma'}],
+    2:[{a:8,b:6,opciones:[12,13,14,15],correcta:2,tipo:'suma_grande'},{a:10,b:5,opciones:[13,14,15,16],correcta:2,tipo:'resta'},{a:12,b:4,opciones:[6,7,8,9],correcta:2,tipo:'resta'}],
+    3:[{a:3,b:3,opciones:[6,9,12,15],correcta:1,tipo:'multi'},{a:4,b:2,opciones:[6,8,10,12],correcta:1,tipo:'multi'},{a:5,b:2,opciones:[8,10,12,14],correcta:1,tipo:'multi'}]
+  },
+  comprension:{
+    0:[{img:'🐰',texto:'Pablito salió a jugar. Encontró zanahorias grandes.',pregunta:'¿Qué encontró Pablito?',opciones:['Manzanas','Zanahorias','Flores','Juguetes'],correcta:1},{img:'🌈',texto:'Después de la lluvia, Sofía vio un arcoíris.',pregunta:'¿Cuándo vio el arcoíris?',opciones:['Al amanecer','Antes de lluvia','Después de lluvia','En la noche'],correcta:2}],
+    1:[{img:'🐠',texto:'El pez Nemo vivía en el océano azul. Un día encontró una perla brillante en el fondo del mar. Se la regaló a su amiga la estrella de mar.',pregunta:'¿A quién le regaló la perla?',opciones:['A su mamá','A una ballena','A la estrella de mar','A un pulpo'],correcta:2},{img:'🦁',texto:'León vivía en la sabana. Un día llegó la lluvia y todos corrieron bajo un árbol. Allí cantaron juntos.',pregunta:'¿Por qué corrieron bajo el árbol?',opciones:['Por hambre','Por la lluvia','Por el sol','Por jugar'],correcta:1}],
+    2:[{img:'🌿',texto:'María encontró una semilla en el jardín. La plantó, le dio agua y sol cada día. Después de dos semanas brotó una hermosa flor amarilla.',pregunta:'¿Qué hizo para que creciera?',opciones:['Solo la plantó','Le dio agua y sol','La guardó en casa','La dejó sin agua'],correcta:1}],
+    3:[{img:'🦊',texto:'La zorra vio uvas altas en la parra. Saltó varias veces pero no las alcanzó. Finalmente dijo: seguro estaban amargas. Sus amigos pensaron que lo decía para sentirse mejor.',pregunta:'¿Por qué dijo que estaban amargas?',opciones:['Porque realmente lo estaban','Para no admitir que no las alcanzó','Porque no le gustaban','Porque ya se las comió'],correcta:1}]
+  }
+};
+
+function starsText(arr){return arr.map(s=>s>0?'⭐'.repeat(s):'☆').join(' ');}
+
+function updateConfirmPreview(){
+  const p=STATE;
+  document.getElementById('save-lect').textContent='Lectura: N'+(p.progress.lectura.unlocked+1)+' · '+starsText(p.progress.lectura.stars);
+  document.getElementById('save-escr').textContent='Escritura: N'+(p.progress.escritura.unlocked+1)+' · '+starsText(p.progress.escritura.stars);
+  document.getElementById('save-mat').textContent='Mates: N'+(p.progress.mates.unlocked+1)+' · '+starsText(p.progress.mates.stars);
+  document.getElementById('save-comp').textContent='Comprensión: N'+(p.progress.comprension.unlocked+1)+' · '+starsText(p.progress.comprension.stars);
+  document.getElementById('save-xp').textContent='XP: '+p.totalXP+' · Racha: '+p.streakDays+' días';
+}
+
+function doReset(){
+  const snap={
+    totalXP:STATE.totalXP, playerLevel:STATE.playerLevel, streakDays:STATE.streakDays,
+    progress:JSON.parse(JSON.stringify(STATE.progress)),
+    quincenasCompleted:[...STATE.quincenasCompleted],
+    currentQuincena:STATE.currentQuincena,
+    savedAt:new Date().toLocaleDateString('es-CO',{month:'short',year:'numeric'})
+  };
+  if(snap.totalXP>0||snap.streakDays>0||snap.progress.lectura.stars.some(s=>s>0)){
+    HISTORY.push(snap);
+  }
+  STATE=freshState();
+  goTo('home');
+  updateHomeUI();
+}
+
+function goTo(s){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById(s).classList.add('active');
+  window.scrollTo(0,0);
+  if(s==='home')updateHomeUI();
+  if(s==='rachas')renderQuincenas();
+  if(s==='history')renderHistory();
+  if(s==='confirm-reset')updateConfirmPreview();
+}
+
+function goToLevels(sub){
+  STATE.currentSubject=sub;
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById('levels-screen').classList.add('active');
+  window.scrollTo(0,0);
+  renderLevels(sub);
+}
+
+function renderHistory(){
+  const list=document.getElementById('hist-list');
+  list.innerHTML='';
+  if(HISTORY.length===0){
+    list.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--txt3);font-family:Fredoka One,cursive;font-size:16px;">¡Aún no hay historial! 🌱<br><span style="font-size:13px;font-family:Nunito,sans-serif;font-weight:600;">Completa ejercicios para guardar tu progreso.</span></div>';
+    return;
+  }
+  [...HISTORY].reverse().forEach((h,i)=>{
+    const card=document.createElement('div');
+    card.className='hist-card';
+    const subs=['lectura','escritura','mates','comprension'];
+    const icons={lectura:'📚',escritura:'✏️',mates:'🔢',comprension:'🌟'};
+    const totalStars=subs.reduce((a,s)=>a+(h.progress[s].stars.reduce((x,y)=>x+y,0)),0);
+    card.innerHTML=`
+      <div class="hist-icon">📊</div>
+      <div class="hist-info">
+        <div class="hist-name">Progreso guardado ${HISTORY.length-i}</div>
+        <div class="hist-detail">${h.savedAt||'Abr 2026'} · ${h.totalXP} XP · Racha ${h.streakDays} días</div>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:3px;">
+          ${subs.map(s=>`<div style="font-size:11px;color:var(--txt2);font-weight:700;">${icons[s]} N${h.progress[s].unlocked+1} · ${'⭐'.repeat(Math.min(h.progress[s].stars.reduce((a,b)=>a+b,0),9))}</div>`).join('')}
+        </div>
+      </div>
+      <div class="hist-xp">⭐${totalStars}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function renderQuincenas(){
+  const list=document.getElementById('quincenas-list');list.innerHTML='';
+  QUINCENAS.forEach((q)=>{
+    const done=STATE.quincenasCompleted.includes(q.id);
+    const isCurr=q.id===STATE.currentQuincena;
+    const card=document.createElement('div');
+    card.className='q-card'+(done?' unlocked':isCurr?' current':' locked');
+    card.innerHTML=`
+      <div class="q-month-badge">${q.mes}</div>
+      <div class="q-icon ${done?'done':isCurr?'curr':''}">${done?'✅':q.icon}</div>
+      <div style="flex:1;">
+        <div class="q-name">${q.periodo}</div>
+        <div class="q-dates">${q.dias} días consecutivos</div>
+        <div class="q-reward">${q.reward} ${q.rName}</div>
+        <div class="q-stars">${done?'⭐⭐⭐':isCurr?'☆☆☆':'🔒'}</div>
+      </div>
+      ${done?'<span style="font-size:20px;">🎀</span>':isCurr?'<span style="font-size:12px;font-weight:800;color:var(--acc);background:var(--pk1);padding:4px 8px;border-radius:8px;">¡Aquí!</span>':'<span style="font-size:18px;color:var(--pk3);">🔒</span>'}
+    `;
+    if(isCurr)card.onclick=()=>simulateCompleteQuincena(q);
+    list.appendChild(card);
+  });
+}
+
+function simulateCompleteQuincena(q){
+  STATE.quincenasCompleted.push(q.id);
+  STATE.currentQuincena=q.id+1;
+  STATE.streakDays+=q.dias;
+  STATE.totalXP+=50;
+  showReward(q);
+}
+
+function showReward(q){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById('reward-screen').classList.add('active');
+  document.getElementById('r-confetti').textContent='🎀';
+  document.getElementById('r-title').textContent='¡Racha lograda, Luisa! 💕';
+  document.getElementById('r-sub').textContent='¡Completaste tu quincena de '+q.mes+'!';
+  document.getElementById('r-reward-icon').textContent=q.reward;
+  document.getElementById('r-reward-name').textContent=q.rName;
+  document.getElementById('r-reward-desc').textContent=q.rDesc;
+  document.getElementById('r-badge').textContent='Quincena '+q.id+' · '+q.mes+' 2026';
+}
+function closeReward(){goTo('rachas');}
+
+function renderLevels(sub){
+  const prog=STATE.progress[sub];
+  const lvls=LEVELS[sub];
+  const titles={lectura:'📚 Lectura',escritura:'✏️ Escritura',mates:'🔢 Matemáticas',comprension:'🌟 Comprensión'};
+  document.getElementById('levels-title').textContent=titles[sub];
+  const list=document.getElementById('levels-list');list.innerHTML='';
+  lvls.forEach((lv,i)=>{
+    const unlocked=i<=prog.unlocked;
+    const completed=prog.stars[i]>0;
+    const isCurr=i===prog.unlocked;
+    const dp=DP[lv.dc];
+    const card=document.createElement('div');
+    card.className='level-card'+(unlocked?'':' locked')+(completed?' completed':'')+(isCurr?' current':'');
+    if(isCurr)card.style.borderColor=dp.c;
+    card.innerHTML=`
+      <div class="lv-icon" style="background:${dp.bg};">${lv.icon}</div>
+      <div style="flex:1;">
+        <div class="lv-name">${lv.name} <span class="diff-pill dp-${lv.dc}" style="background:${dp.bg};color:${dp.c};">${lv.diff}</span></div>
+        <div class="lv-desc">${lv.desc}</div>
+        <div class="lv-stars-row">${[0,1,2].map(s=>`<span>${s<(prog.stars[i]||0)?'⭐':'☆'}</span>`).join('')}</div>
+      </div>
+      ${unlocked?'':'<span style="font-size:18px;color:#FFB3D1;">🔒</span>'}
+    `;
+    if(unlocked)card.onclick=()=>startLevel(sub,i);
+    list.appendChild(card);
+  });
+}
+
+function startLevel(sub,idx){
+  STATE.currentSubject=sub;STATE.currentLevelIdx=idx;
+  STATE.scores[sub]=0;STATE.questIdx[sub]=0;STATE.levelQuestCount[sub]=0;
+  const scoreId=sub==='comprension'?'comp':sub;
+  document.getElementById('score-'+scoreId).textContent='0';
+  const lv=LEVELS[sub][idx];const dp=DP[lv.dc];
+  const diffId='diff-'+(sub==='comprension'?'comp':sub);
+  const el=document.getElementById(diffId);
+  if(el){el.textContent=lv.diff;el.style.background=dp.bg;el.style.color=dp.c;}
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById(sub).classList.add('active');
+  window.scrollTo(0,0);
+  if(sub==='lectura')initLectura();
+  if(sub==='escritura')initEscritura();
+  if(sub==='mates')initMates();
+  if(sub==='comprension')initComprension();
+}
+
+function updateHomeUI(){
+  ['lectura','escritura','mates','comprension'].forEach(sub=>{
+    const p=STATE.progress[sub];
+    const lvl=p.unlocked+1;
+    const ts=p.stars.reduce((a,b)=>a+b,0);
+    const pct=Math.round((ts/(LEVELS[sub].length*3))*100);
+    document.getElementById('hl-'+sub).textContent=`Nivel ${lvl} · ${pct}%`;
+    document.getElementById('hp-'+sub).style.width=pct+'%';
+  });
+  document.getElementById('total-xp').textContent=STATE.totalXP;
+  document.getElementById('player-level').textContent=STATE.playerLevel;
+  document.getElementById('xp-fill').style.width=Math.min((STATE.totalXP%100),100)+'%';
+  document.getElementById('streak-count').textContent=STATE.streakDays;
+  const qIdx=Math.min(STATE.currentQuincena-1,QUINCENAS.length-1);
+  const cq=QUINCENAS[qIdx];
+  document.getElementById('streak-quincena-info').textContent='Quincena '+cq.id+' · '+cq.mes+' 2026';
+  document.getElementById('next-reward-icon').textContent=cq.reward;
+  const flames=document.getElementById('streak-flames');
+  flames.innerHTML='';
+  for(let i=0;i<15;i++){const s=document.createElement('span');s.textContent=i<(STATE.streakDays%15||0)?'🔥':'○';flames.appendChild(s);}
+}
+
+function showFeedback(id,ok,msg){const fb=document.getElementById(id);fb.style.display='block';fb.innerHTML=`<span class="fb-emoji">${ok?'🌸':'💪'}</span><div class="fb-text ${ok?'fb-ok':'fb-fail'}">${msg}</div>`;}
+function hideFeedback(id){const fb=document.getElementById(id);if(fb){fb.style.display='none';fb.innerHTML='';}}
+
+function checkLevelComplete(){
+  const sub=STATE.currentSubject;
+  STATE.levelQuestCount[sub]++;
+  const qs=CONTENT[sub][STATE.currentLevelIdx]||CONTENT[sub][0];
+  if(STATE.levelQuestCount[sub]>=qs.length){setTimeout(()=>showLevelComplete(),600);return true;}
+  return false;
+}
+
+function showLevelComplete(){
+  const sub=STATE.currentSubject,idx=STATE.currentLevelIdx;
+  const score=STATE.scores[sub];
+  const max=(CONTENT[sub][idx]||CONTENT[sub][0]).length*10;
+  const stars=score>=max?3:score>=max*.6?2:1;
+  const prev=STATE.progress[sub].stars[idx]||0;
+  if(stars>prev)STATE.progress[sub].stars[idx]=stars;
+  const xp=Math.round(LEVELS[sub][idx].xp*stars/3);
+  STATE.totalXP+=xp;STATE.playerLevel=Math.floor(STATE.totalXP/100)+1;
+  const nextIdx=idx+1;const wasLocked=STATE.progress[sub].unlocked<nextIdx;
+  if(nextIdx<LEVELS[sub].length&&stars>=1)STATE.progress[sub].unlocked=Math.max(STATE.progress[sub].unlocked,nextIdx);
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById('modal-screen').classList.add('active');
+  document.getElementById('m-emoji').textContent=stars===3?'🏆':stars===2?'🎉':'🌸';
+  document.getElementById('m-title').textContent=stars===3?'¡Perfecto, Luisa! 💕':stars===2?'¡Muy bien! 🌸':'¡Lo lograste! ✨';
+  document.getElementById('m-sub').textContent='+'+xp+' XP · '+LEVELS[sub][idx].name+' completado';
+  document.getElementById('m-stars').innerHTML=[0,1,2].map((s,i)=>`<span class="m-star" style="animation-delay:${i*.15}s;">${s<stars?'⭐':'☆'}</span>`).join('');
+  const ul=document.getElementById('m-unlock');
+  if(wasLocked&&nextIdx<LEVELS[sub].length){ul.style.display='flex';document.getElementById('m-unlock-text').textContent='¡Desbloqueaste '+LEVELS[sub][nextIdx].name+'!';}
+  else ul.style.display='none';
+  modalCallback=()=>goToLevels(sub);
+}
+function modalContinue(){if(modalCallback)modalCallback();updateHomeUI();}
+
+function initLectura(){STATE.questIdx.lectura=0;STATE.levelQuestCount.lectura=0;hideFeedback('lect-feedback');document.getElementById('next-lectura').style.display='none';renderLectura();}
+function renderLectura(){
+  const qs=CONTENT.lectura[STATE.currentLevelIdx]||CONTENT.lectura[0];
+  const d=qs[STATE.questIdx.lectura%qs.length];
+  document.getElementById('letra-actual').textContent=d.letra;
+  hideFeedback('lect-feedback');document.getElementById('next-lectura').style.display='none';
+  const cont=document.getElementById('opciones-lectura');cont.innerHTML='';
+  d.opciones.forEach((op,i)=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=op;btn.style.fontSize='26px';btn.onclick=()=>checkLectura(i,d.correcta);cont.appendChild(btn);});
+}
+function checkLectura(sel,correct){
+  const btns=document.querySelectorAll('#opciones-lectura .opt-btn');btns.forEach(b=>b.disabled=true);
+  btns[sel].classList.add(sel===correct?'correct':'wrong');
+  if(sel===correct){STATE.scores.lectura+=10;document.getElementById('score-lectura').textContent=STATE.scores.lectura;showFeedback('lect-feedback',true,'¡Muy bien! 🌸');}
+  else{btns[correct].classList.add('correct');showFeedback('lect-feedback',false,'¡Casi! 💪');}
+  document.getElementById('next-lectura').style.display='block';
+}
+function nextLectura(){if(!checkLevelComplete()){STATE.questIdx.lectura++;renderLectura();}}
+
+function initEscritura(){STATE.questIdx.escritura=0;STATE.levelQuestCount.escritura=0;STATE.typedSoFar='';renderEscritura();}
+function renderEscritura(){
+  const qs=CONTENT.escritura[STATE.currentLevelIdx]||CONTENT.escritura[0];
+  const d=qs[STATE.questIdx.escritura%qs.length];
+  document.getElementById('escrit-img').textContent=d.img;STATE.typedSoFar='';updateTyped(d.word);
+  hideFeedback('escrit-feedback');document.getElementById('next-escritura').style.display='none';buildKeyboard(d.word);
+}
+function updateTyped(w){document.getElementById('typed-word').textContent=w.split('').map((c,i)=>i<STATE.typedSoFar.length?STATE.typedSoFar[i]:'_').join(' ');}
+function buildKeyboard(word){
+  const kb=document.getElementById('keyboard');kb.innerHTML='';
+  'ABCDEFGHIJKLMNOPRSTUVZ'.split('').forEach(l=>{const btn=document.createElement('button');btn.className='key-btn';btn.textContent=l;btn.onclick=()=>{if(STATE.typedSoFar.length<word.length){STATE.typedSoFar+=l;updateTyped(word);}};kb.appendChild(btn);});
+  const del=document.createElement('button');del.className='key-btn key-del';del.textContent='⌫ Borrar';del.onclick=()=>{STATE.typedSoFar=STATE.typedSoFar.slice(0,-1);updateTyped(word);};kb.appendChild(del);
+  const ok=document.createElement('button');ok.className='key-btn key-ok';ok.textContent='✓ Listo';ok.onclick=()=>checkEscritura(word);kb.appendChild(ok);
+}
+function checkEscritura(word){
+  if(STATE.typedSoFar.length<word.length){showFeedback('escrit-feedback',false,'¡Faltan letras! 💕');return;}
+  if(STATE.typedSoFar===word){STATE.scores.escritura+=10;document.getElementById('score-escritura').textContent=STATE.scores.escritura;showFeedback('escrit-feedback',true,'¡Perfecto! 🌸');document.getElementById('next-escritura').style.display='block';}
+  else{showFeedback('escrit-feedback',false,'Era "'+word+'". ¡Inténtalo! 💪');setTimeout(()=>{STATE.typedSoFar='';updateTyped(word);hideFeedback('escrit-feedback');},1800);}
+}
+function nextEscritura(){if(!checkLevelComplete()){STATE.questIdx.escritura++;renderEscritura();}}
+
+function initMates(){STATE.questIdx.mates=0;STATE.levelQuestCount.mates=0;renderMates();}
+function renderMates(){
+  const qs=CONTENT.mates[STATE.currentLevelIdx]||CONTENT.mates[0];
+  const d=qs[STATE.questIdx.mates%qs.length];
+  hideFeedback('mates-feedback');document.getElementById('next-mates').style.display='none';
+  const vis=document.getElementById('vis-items');vis.innerHTML='';
+  const op=document.getElementById('operacion-display');
+  if(d.tipo==='conteo'){for(let i=0;i<d.cantidad;i++){const s=document.createElement('span');s.style.fontSize='24px';s.textContent=d.emoji;vis.appendChild(s);}op.textContent='¿Cuántos '+d.emoji+'?';}
+  else if(d.tipo==='suma'){for(let i=0;i<d.a;i++){const s=document.createElement('span');s.style.fontSize='20px';s.textContent=d.emoji;vis.appendChild(s);}const pl=document.createElement('span');pl.textContent=' + ';pl.style.cssText='font-size:18px;font-weight:800;color:#059669;';vis.appendChild(pl);for(let i=0;i<d.b;i++){const s=document.createElement('span');s.style.fontSize='20px';s.textContent=d.emoji;vis.appendChild(s);}op.textContent=d.a+' + '+d.b+' = ?';}
+  else if(d.tipo==='suma_grande')op.textContent=d.a+' + '+d.b+' = ?';
+  else if(d.tipo==='resta')op.textContent=d.a+' − '+d.b+' = ?';
+  else if(d.tipo==='multi')op.textContent=d.a+' × '+d.b+' = ?';
+  const cont=document.getElementById('num-opciones');cont.innerHTML='';
+  d.opciones.forEach((o2,i)=>{const btn=document.createElement('button');btn.className='num-btn';btn.textContent=o2;btn.onclick=()=>checkMates(i,d.correcta);cont.appendChild(btn);});
+}
+function checkMates(sel,correct){
+  const btns=document.querySelectorAll('#num-opciones .num-btn');btns.forEach(b=>b.disabled=true);
+  btns[sel].classList.add(sel===correct?'correct':'wrong');
+  if(sel===correct){STATE.scores.mates+=10;document.getElementById('score-mates').textContent=STATE.scores.mates;showFeedback('mates-feedback',true,'¡Correcto! 🌸');}
+  else{btns[correct].classList.add('correct');showFeedback('mates-feedback',false,'Era '+btns[correct].textContent+'. 💪');}
+  document.getElementById('next-mates').style.display='block';
+}
+function nextMates(){if(!checkLevelComplete()){STATE.questIdx.mates++;renderMates();}}
+
+function initComprension(){STATE.questIdx.comprension=0;STATE.levelQuestCount.comprension=0;renderComp();}
+function renderComp(){
+  const qs=CONTENT.comprension[STATE.currentLevelIdx]||CONTENT.comprension[0];
+  const d=qs[STATE.questIdx.comprension%qs.length];
+  document.getElementById('cuento-img').textContent=d.img;
+  document.getElementById('cuento-texto').textContent=d.texto;
+  document.getElementById('preg-texto').textContent=d.pregunta;
+  hideFeedback('comp-feedback');document.getElementById('next-comp').style.display='none';
+  const cont=document.getElementById('respuestas-container');cont.innerHTML='';
+  d.opciones.forEach((op,i)=>{const btn=document.createElement('button');btn.className='resp-btn';btn.textContent=op;btn.onclick=()=>checkComp(i,d.correcta,cont);cont.appendChild(btn);});
+}
+function checkComp(sel,correct,cont){
+  const btns=cont.querySelectorAll('.resp-btn');btns.forEach(b=>b.disabled=true);
+  btns[sel].classList.add(sel===correct?'correct':'wrong');
+  if(sel===correct){STATE.scores.comprension+=10;document.getElementById('score-comp').textContent=STATE.scores.comprension;showFeedback('comp-feedback',true,'¡Leíste muy bien! 🌸');document.getElementById('next-comp').style.display='block';}
+  else{btns[correct].classList.add('correct');showFeedback('comp-feedback',false,'Lee con calma. 💪');setTimeout(()=>{btns.forEach(b=>{b.disabled=false;b.classList.remove('wrong','correct');});hideFeedback('comp-feedback');},2000);}
+}
+function nextComprension(){if(!checkLevelComplete()){STATE.questIdx.comprension++;renderComp();}}
+
+updateHomeUI();
+</script>
+</body>
+</html>
